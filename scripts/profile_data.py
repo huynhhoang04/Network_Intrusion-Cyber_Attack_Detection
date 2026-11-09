@@ -10,53 +10,22 @@ Usage:
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-COLUMNS = [
-    "duration", "protocol_type", "service", "flag", "src_bytes", "dst_bytes",
-    "land", "wrong_fragment", "urgent", "hot", "num_failed_logins", "logged_in",
-    "num_compromised", "root_shell", "su_attempted", "num_root",
-    "num_file_creations", "num_shells", "num_access_files", "num_outbound_cmds",
-    "is_host_login", "is_guest_login", "count", "srv_count", "serror_rate",
-    "srv_serror_rate", "rerror_rate", "srv_rerror_rate", "same_srv_rate",
-    "diff_srv_rate", "srv_diff_host_rate", "dst_host_count",
-    "dst_host_srv_count", "dst_host_same_srv_rate", "dst_host_diff_srv_rate",
-    "dst_host_same_src_port_rate", "dst_host_srv_diff_host_rate",
-    "dst_host_serror_rate", "dst_host_srv_serror_rate", "dst_host_rerror_rate",
-    "dst_host_srv_rerror_rate", "label", "difficulty",
-]
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-ATTACK_FAMILY = {
-    "DoS": [
-        "back", "land", "neptune", "pod", "smurf", "teardrop", "mailbomb",
-        "processtable", "udpstorm", "apache2", "worm",
-    ],
-    "Probe": ["satan", "ipsweep", "nmap", "portsweep", "mscan", "saint"],
-    "R2L": [
-        "ftp_write", "guess_passwd", "imap", "multihop", "phf", "spy",
-        "warezclient", "warezmaster", "xlock", "xsnoop", "snmpguess",
-        "snmpgetattack", "httptunnel", "sendmail", "named",
-    ],
-    "U2R": [
-        "buffer_overflow", "loadmodule", "perl", "rootkit", "sqlattack",
-        "xterm", "ps",
-    ],
-}
-
-NAME_TO_FAMILY = {attack: family for family, names in ATTACK_FAMILY.items() for attack in names}
-CATEGORICAL = ["protocol_type", "service", "flag"]
+from nids.config import CATEGORICAL, COLUMNS, NAME_TO_FAMILY
+from nids.data import to_family_label
 
 
 def load(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, names=COLUMNS)
 
 
-def family_series(df: pd.DataFrame) -> pd.Series:
-    return df["label"].map(
-        lambda x: "Normal" if x == "normal" else NAME_TO_FAMILY.get(x, "UNMAPPED")
-    )
+family_series = to_family_label
 
 
 def profile(df: pd.DataFrame, name: str) -> None:

@@ -261,6 +261,8 @@ Tài liệu này **chưa** chốt:
 
 ## 9. Glossary — thuật ngữ nhanh
 
+> Bản đầy đủ, phân theo nhóm và có công thức: [02 — Thuật ngữ chuyên ngành](./02-thuat-ngu.md).
+
 | Thuật ngữ | Nghĩa dễ hiểu |
 |---|---|
 | **IDS** | Intrusion Detection System — hệ thống phát hiện xâm nhập |
